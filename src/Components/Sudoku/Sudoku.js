@@ -230,7 +230,7 @@ class Sudoku extends Component {
     //      }
     //     }
     //   }
-    }
+    // }
 
     return true;
   }
