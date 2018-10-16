@@ -10,6 +10,7 @@ const Header = () => (
           <li className="route-links"><Link to='/game'>Game</Link></li>
           <li className="route-links"><Link to='/login'>Login</Link></li>
           <li className="route-links"><Link to='/register'>Register</Link></li>
+          <li className="route-links"><Link to='/sudoku'>Sudoku</Link></li>
         </ul>
       </nav>
     </header>
