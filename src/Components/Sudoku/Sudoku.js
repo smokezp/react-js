@@ -144,6 +144,7 @@ class Sudoku extends Component {
     }
   */
 
+
   getRandomNumber(i_n) {
     let array = [];
     for (let i = 0; i < 9; i++) {
@@ -164,8 +165,6 @@ class Sudoku extends Component {
 
   }
 
-  /*
-  */
   switchRows(new_board) {
     let rand1 = this.getRandomNumber();
     let rand2 = this.getRandomNumber(rand1);
@@ -196,13 +195,44 @@ class Sudoku extends Component {
 
   transportBoard(default_board) {
     let new_board = default_board;
-    for (let m = 0; m <= this.getRandomNumber(default_board) + 1; m++) {
+    for (let m = 0; m <= this.getRandomNumber() + 1; m++) {
       new_board = this.transportAllBoard(new_board);
       new_board = this.switchRows(new_board);
       new_board = this.switchColumns(new_board);
     }
+    new_board = this.deleteCells(new_board);
+    return new_board;
+  }
+
+  deleteCells(old_board) {
+    let new_board = old_board;
+
+    for (let i = 0; i < new_board.length; i++) {
+      for (let j = 0; j < new_board.length; j++) {
+        let rand = this.getRandomNumber();
+        if (rand < 4) {
+          let value = new_board[i][j];
+          new_board[i][j] = null;
+          if (!this.isCorrect(new_board)) new_board[i][j] = value;
+        }
+      }
+    }
 
     return new_board;
+  }
+
+  isCorrect(new_board) {
+    // for (let i = 0; i < new_board.length; i++) {
+    //   for (let j = 0; j < new_board.length; j++) {
+    //     if (!new_board[i][j]) {
+    //      for(let m = 1; m <= 9; m++) {
+    //
+    //      }
+    //     }
+    //   }
+    }
+
+    return true;
   }
 
   generateBoard() {
