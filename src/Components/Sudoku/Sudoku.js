@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import cloneDeep from 'lodash/cloneDeep';
 
 class Sudoku extends Component {
   constructor(props) {
@@ -31,17 +32,7 @@ class Sudoku extends Component {
       let correct = false;
       let number;
 
-      const positions = [
-        [0, 2, 0, 2],
-        [0, 2, 3, 5],
-        [0, 2, 6, 8],
-        [3, 5, 0, 2],
-        [3, 5, 3, 5],
-        [3, 5, 6, 8],
-        [6, 8, 0, 2],
-        [6, 8, 3, 5],
-        [6, 8, 6, 8]
-      ];
+
 
       let count = 0;
       while (correct === false) {
@@ -50,69 +41,9 @@ class Sudoku extends Component {
         // console.log('incorrect_numbers', incorrect_numbers);
         // console.log('number', number);
         // }
-        let check_successful = true;
-        // console.log(number);
 
-        top:
-            for (let i = 0; i < 2; i++) {
-              for (let j = 0; j < this.state.last_number; j++) {
-                let another_number;
-                if (i) {
-                  another_number = this.state.board[row_key][j]
-                } else {
-                  another_number = this.state.board[j][key]
-                }
-                // console.log('j', j);
-                if (number === another_number) {
-                  // console.log(this.state.board);debugger
-                  // console.log('incorrect_numbers', incorrect_numbers);
-                  // console.log('i=', i)
-                  // console.log('row_key=', row_key)
-                  // console.log('key=', key)
-                  // console.log('another_number', another_number)
-                  // console.log('number_f', number)
-                  check_successful = false;
-                  // console.log('failed1');
-                  break top;
-                }
-              }
-            }
 
-        if (check_successful) {
 
-          for (let i = 0; i < positions.length; i++) {
-            // console.log(positions[i]);
-            let row_key_from = positions[i][0],
-                row_key_to = positions[i][1],
-                key_from = positions[i][2],
-                key_to = positions[i][3];
-            // console.log('row_key_from', row_key_from);
-            // console.log('row_key_to', row_key_to);
-            // console.log('key_from', key_from);
-            // console.log('key_to', key_to);
-            if (row_key_from <= row_key && row_key <= row_key_to &&
-                key_from <= key && key <= key_to) {
-              // console.log('!!!!row_key=', row_key);
-              // console.log('!!!!key=', key);
-              top2:
-                  for (let j = row_key_from; j <= row_key_to; j++) {
-                    // console.log('j', j);
-
-                    for (let k = key_from; k <= key_to; k++) {
-                      // console.log('k', k);
-                      if (this.state.board[j][k] === number) {
-                        check_successful = false;
-                        // console.log('j')
-                        // console.log('failed2');
-                        break top2;
-                      }
-                    }
-                  }
-
-              break;
-            }
-          }
-        }
 
         // console.log('number', number);
         // console.log('check_successful', check_successful);
@@ -195,25 +126,28 @@ class Sudoku extends Component {
 
   transportBoard(default_board) {
     let new_board = default_board;
-    for (let m = 0; m <= this.getRandomNumber() + 1; m++) {
-      new_board = this.transportAllBoard(new_board);
-      new_board = this.switchRows(new_board);
-      new_board = this.switchColumns(new_board);
-    }
+    // for (let m = 0; m <= this.getRandomNumber() + 1; m++) {
+    //   new_board = this.transportAllBoard(new_board);
+    //   new_board = this.switchRows(new_board);
+    //   new_board = this.switchColumns(new_board);
+    // }
     new_board = this.deleteCells(new_board);
     return new_board;
   }
 
   deleteCells(old_board) {
     let new_board = old_board;
-
+    // let count = 0;
+    // ddd:
     for (let i = 0; i < new_board.length; i++) {
       for (let j = 0; j < new_board.length; j++) {
         let rand = this.getRandomNumber();
-        if (rand < 4) {
+        if (rand < 5) {
           let value = new_board[i][j];
           new_board[i][j] = null;
           if (!this.isCorrect(new_board)) new_board[i][j] = value;
+          // if ( count ===1) break ddd;
+          // count+=1;
         }
       }
     }
@@ -221,18 +155,153 @@ class Sudoku extends Component {
     return new_board;
   }
 
-  isCorrect(new_board) {
-    // for (let i = 0; i < new_board.length; i++) {
-    //   for (let j = 0; j < new_board.length; j++) {
-    //     if (!new_board[i][j]) {
-    //      for(let m = 1; m <= 9; m++) {
-    //
-    //      }
-    //     }
-    //   }
-    // }
+  getEmptyCells(board) {
+    let all_empty_cells = [];
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board.length; j++) {
+        if (!board[i][j]) all_empty_cells.push({i: i, j: j, used: []})
+      }
+    }
+    return all_empty_cells
+  }
 
-    return true;
+  isCorrect(new_board) {
+    let all_empty_cells = this.getEmptyCells(new_board);
+    // console.log(all_empty_cells.length);
+    let correct = true;
+    let solutions = 0;
+    let length_of_empty = all_empty_cells.length;
+    if (length_of_empty) {
+
+      const positions = [
+        [0, 2, 0, 2],
+        [0, 2, 3, 5],
+        [0, 2, 6, 8],
+        [3, 5, 0, 2],
+        [3, 5, 3, 5],
+        [3, 5, 6, 8],
+        [6, 8, 0, 2],
+        [6, 8, 3, 5],
+        [6, 8, 6, 8]
+      ];
+
+
+      let count = 0;
+
+      let fff = 0;
+      while (count !== length_of_empty && correct) {
+        let clone_board = cloneDeep(new_board);
+        let first_number;
+        for (let n = 0; n < length_of_empty; n++) {
+          let empty_cell = all_empty_cells[n];
+
+          let is_correct_number = false;
+          for (let number = 1; number <= 9; number++) {
+            let check_successful = true;
+
+            if (!empty_cell.used.includes(number)) {
+              if (n === count) first_number = number;
+              top:
+                  for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < 9; j++) {
+                      let another_number;
+                      if (i) {
+                        another_number = clone_board[empty_cell.i][j]
+                      } else {
+                        another_number = clone_board[j][empty_cell.j]
+                      }
+
+                      if (number === another_number) {
+                        check_successful = false;
+                        break top;
+                      }
+                    }
+                  }
+
+
+              if (check_successful) {
+                for (let i = 0; i < positions.length; i++) {
+
+                  let row_key_from = positions[i][0],
+                      row_key_to = positions[i][1],
+                      key_from = positions[i][2],
+                      key_to = positions[i][3];
+
+                  if (row_key_from <= empty_cell.i && empty_cell.i <= row_key_to &&
+                      key_from <= empty_cell.j && empty_cell.j <= key_to) {
+
+                    top2:
+                        for (let j = row_key_from; j <= row_key_to; j++) {
+                          for (let k = key_from; k <= key_to; k++) {
+                            if (clone_board[j][k] === number) {
+                              check_successful = false;
+                              break top2;
+                            }
+                          }
+                        }
+
+                    break;
+                  }
+                }
+              }
+
+              if (check_successful) {
+                // console.log('___');
+                // console.log(all_empty_cells.length);
+                // console.log('number', number);
+                clone_board[empty_cell.i][empty_cell.j] = number;
+                is_correct_number = true;
+                break;
+              }
+            }
+          }
+
+          all_empty_cells[count].used.push(first_number);
+          // console.log(all_empty_cells[count].used);
+              // console.log('count', count);
+              // console.log('n', n);
+            if (n === count && !is_correct_number) {
+              // console.log('n-==cc');
+              all_empty_cells[count].used.splice();
+              count += 1;
+            }
+        }
+
+        if (!this.getEmptyCells(clone_board).length) {
+
+          all_empty_cells[count].used.push(first_number);
+          // count += 1;
+          solutions += 1;
+        }
+
+        if (solutions > 1) {
+
+          // console.log('solutions', solutions);
+          correct = false;
+          break;
+        }
+
+
+        fff += 1;
+        if (fff > 100000) {
+
+
+          // console.log('count', count);
+          // console.log('all_empty_cells', all_empty_cells.length);
+          console.log('!!!!!!!!!!1');
+          break;
+        }
+
+
+        // count += 1;
+        // if (count > 10000) {
+        //   correct = false;
+        // }
+      }
+
+    }
+      console.log('solutions', solutions);
+    return solutions === 1;
   }
 
   generateBoard() {
