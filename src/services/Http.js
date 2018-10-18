@@ -23,7 +23,8 @@ class Http {
       axios({
         url: 'http://laravel.loc/api/' + url, data: data, method: method, headers: {
           // 'Authorization': 'Bearer ',
-          'Content-Type': 'multipart/form-data'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
     }
       })
           .then(resp => {

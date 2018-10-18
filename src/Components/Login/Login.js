@@ -6,7 +6,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      login: '',
+      email: '',
       password: ''
     };
     this.http = new Http();
@@ -36,8 +36,8 @@ class Login extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Email:
-            <input type="text" value={this.state.login}
-                   onChange={e => this.handleChange('login', e.target.value)}/>
+            <input type="email" value={this.state.email}
+                   onChange={e => this.handleChange('email', e.target.value)}/>
           </label>
           <label>
             Password:
