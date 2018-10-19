@@ -93,7 +93,7 @@ class Sudoku extends Component {
   }
 
   setNumber(row_key, key) {
-
+    console.log('666');
   }
 
   switchRows(new_board) {
@@ -201,7 +201,7 @@ class Sudoku extends Component {
 
             if (!empty_cell.used.includes(number)) {
               if (n === count) first_number = number;
-              top:
+              first_check:
                   for (let i = 0; i < 2; i++) {
                     for (let j = 0; j < 9; j++) {
                       let another_number;
@@ -213,7 +213,7 @@ class Sudoku extends Component {
 
                       if (number === another_number) {
                         check_successful = false;
-                        break top;
+                        break first_check;
                       }
                     }
                   }
@@ -230,12 +230,12 @@ class Sudoku extends Component {
                   if (row_key_from <= empty_cell.i && empty_cell.i <= row_key_to &&
                       key_from <= empty_cell.j && empty_cell.j <= key_to) {
 
-                    top2:
+                    second_check:
                         for (let j = row_key_from; j <= row_key_to; j++) {
                           for (let k = key_from; k <= key_to; k++) {
                             if (clone_board[j][k] === number) {
                               check_successful = false;
-                              break top2;
+                              break second_check;
                             }
                           }
                         }
@@ -246,9 +246,6 @@ class Sudoku extends Component {
               }
 
               if (check_successful) {
-                // console.log('___');
-                // console.log(all_empty_cells.length);
-                // console.log('number', number);
                 clone_board[empty_cell.i][empty_cell.j] = number;
                 is_correct_number = true;
                 break;
@@ -256,27 +253,24 @@ class Sudoku extends Component {
             }
           }
 
+
+
           all_empty_cells[count].used.push(first_number);
-          // console.log(all_empty_cells[count].used);
-              // console.log('count', count);
-              // console.log('n', n);
+
             if (n === count && !is_correct_number) {
-              // console.log('n-==cc');
               all_empty_cells[count].used.splice();
+              console.log(count);
               count += 1;
             }
         }
 
         if (!this.getEmptyCells(clone_board).length) {
 
-          all_empty_cells[count].used.push(first_number);
-          // count += 1;
+          // all_empty_cells[count].used.push(first_number);
           solutions += 1;
         }
 
         if (solutions > 1) {
-
-          // console.log('solutions', solutions);
           correct = false;
           break;
         }
@@ -309,7 +303,7 @@ class Sudoku extends Component {
       const array = row.map((value, key) => {
 
         return (
-            <button key={key} className="square" onClick={() => this.setNumber(row_key, key)}>{value}</button>
+            <input key={key} className="square" value={value? value:''} onChange={() => this.setNumber(row_key, key)}/>
         );
       });
 
